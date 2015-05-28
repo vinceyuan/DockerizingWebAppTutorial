@@ -3,14 +3,15 @@ var http = require('http');
 var path = require('path');
 var pg = require('pg');
 var redis = require("redis");
-var redisClient = redis.createClient(6379, '127.0.0.1', {})
 
 var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.use(express.logger('dev'));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
@@ -21,6 +22,7 @@ pgClient.connect(function(err) {
   if(err) return console.error('Could not connect to postgres', err);
   console.log('Connected to postgres');
 });
+var redisClient = redis.createClient(6379, '127.0.0.1', {})
 
 app.get('/', function(req, res) {
 	pgClient.query('SELECT NOW() AS "theTime"', function(err1, result) {
