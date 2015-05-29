@@ -12,11 +12,14 @@ app.use(express.logger('dev'));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+var conString;
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+  conString = "postgres://vince:@localhost/mynodeappdb"; // Use your db, user and password
+} else {
+	conString = "postgres://postgres:postgres@localhost/mynodeappdb"; // Use your db, user and password
 }
-
-var conString = "postgres://vince:@localhost/mynodeappdb"; // Use your db, user and password
+ 
 var pgClient = new pg.Client(conString);
 pgClient.connect(function(err) {
   if(err) return console.error('Could not connect to postgres', err);
